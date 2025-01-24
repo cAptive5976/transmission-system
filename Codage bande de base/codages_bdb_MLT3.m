@@ -1,29 +1,30 @@
-%% 
+%% Programme du codage BdB MLT3
+
+%% Remise à zéro du contexte
 clear;
 clc;
-close;
+close all;
+
 %% Définition des variables
-D=1000;          %débit en bits/s
-Nech_bit=40;    % nombre d'échantillons par symbole; doit être pair.
-fe=D*Nech_bit;  %fréquence d'échantillonnage.
+D=1000;                 % Débit en bits/s
+Nech_bit=40;            % Nombre d'échantillons par symbole; doit être pair.
+fe=D*Nech_bit;          % Fréquence d'échantillonnage.
 
-Te=1/fe;  % période d'échantillonnage
-Tb=1/D;   % durée d'un bit
+Te=1/fe;                % Période d'échantillonnage
+Tb=1/D;                 % Durée d'un bit
 
-data=[0 1 1 1 0 1 1 0 0 0 0 0 0 0  1 0 ];  %séquence utilisateur de 10 bits
-alea=randi([0 1],1,10000);
-data=[data alea];  %ajoute 10000 bits aléatoires
-                                         %après la séquence utilisateur
+data=[0 1 1 1 0 1 1 0 0 0 0 0 0 0  1 0 ];  % Séquence utilisateur de 10 bits
+data=[data randi([0 1],1,10000)];   % Ajoute 10000 bits aléatoires après la séquence utilisateur
 
-Nb=size(data,2);          %Nb de bits à transmettre
-Nech=Nech_bit*Nb;        %nombre total d'échantillons                   
-Tmax=Nb*Tb;               %durée de la trame
+Nb=size(data,2);        % Nombre de bits à transmettre
+Nech=Nech_bit*Nb;       % Nombre total d'échantillons
 
-t=0:Te:Tmax-Te;           %vecteur temps constitué de Ns*Nb échantilllons   
+Tmax=Nb*Tb;             % Durée de la trame
+t=0:Te:Tmax-Te;         % Vecteur temps constitué de Ns*Nb échantilllons    
 
 
 %% Création du signal MLT3
-signal_MLT3=[];             %initialisation du signal codé en MLT3
+signal_MLT3=[];             % Initialisation du signal codé en MLT3
 symbole_POS=5*ones(1,Nech_bit); % Dans le cas ou on a un bit de '1' on a une amplitude de 5V, on envoit donc une suite de 1 (ones)
 symbole_NEG=-5*ones(1,Nech_bit); % Dans le cas ou on a un bit de '0' on a une amplitude de -5V, on envoit donc une suite de 1 (ones)
 symbole_null=zeros(1,Nech_bit);
@@ -31,7 +32,7 @@ symbole_same=ones(1,Nech_bit);
 
 state=true;
 pos=0;
-for n=1:Nb      %codage des différents bits
+for n=1:Nb      % Codage des différents bits
      if (data(n)==1 && state==true && pos==0)
         signal_MLT3=[signal_MLT3 symbole_POS];
         state=false;

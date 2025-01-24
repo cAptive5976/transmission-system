@@ -1,16 +1,18 @@
-%% Remise à zéro du contexte
-clear ;
-clc ;
-close ;
+%% Programme d'émission de porteuse sur l'ADALM Pluto
 
-%% initialisation des variables
-fp = 2.414e9; %fréquence de la porteuse: à modifier selon votre numéro de canal 
-f0 = 50e3;  %fréquence de la sinusoïde à transmettre 
-Fech = 1e6; %fréquence d'échantillonnage du signal c(t) transmis à l'Adalm Pluto 
-Tech=1/Fech; 
-Nech=10000;  %nombre d'échantillons transmis  
-t=(0:Nech-1)*Tech;  %création de la base de temps échantillonnée 
-c = exp(1j*2*pi*f0*t);  % pour transmettre un sinus de fréquence f0 
+%% Remise à zéro du contexte
+clear;
+clc;
+close all;
+
+%% Initialisation des variables
+fp = 2.414e9;               % Fréquence de la porteuse : à modifier selon votre numéro de canal  
+f0 = 50e3;                  % Fréquence de la sinusoïde à transmettre  
+Fech = 1e6;                 % Fréquence d'échantillonnage du signal c(t) transmis à l'Adalm Pluto  
+Tech = 1/Fech;              % Période d'échantillonnage  
+Nech = 10000;               % Nombre d'échantillons transmis  
+t = (0:Nech-1)*Tech;        % Création de la base de temps échantillonnée  
+c = exp(1j*2*pi*f0*t);      % Pour transmettre un sinus de fréquence f0  
 
 %% Configuration de l'ADALM PLUTO émetteur 
 

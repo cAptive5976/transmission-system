@@ -1,20 +1,23 @@
+%% Programme de modulation AM avec modulant Audio
+
+%% Remise à zéro du contexte
 clear;
 clc;
-close;
+close all;
+
 %% Initialisation des variables
-fp = 10000; % fréquence porteuse (Hz)
-Ep = 5;     % amplitude de la porteuse
-fe = 100000; % fréquence d'échantillonnage
-
-[audioData, audioFs] = audioread('musique.mp4'); % Lecture du fichier audio
-
-m = 1;   % indice de modulation
-Te = 1 / fe; % période d'échantillonnage   
-Ne = 2000;  % nombre de points de simulation
-
-t = (0:Ne-1) * Te;
+fp = 10000;         % Fréquence porteuse (Hz)
+Ep = 5;             % Amplitude de la porteuse
+fe = 100000;        % Fréquence d'échantillonnage
+m = 1;              % Indice de modulation
+Te = 1 / fe;        % Période d'échantillonnage   
+Ne = 2000;          % Nombre de points de simulation
+t = (0:Ne-1) * Te;  % vecteur temps
 
 %% Création des différents signaux : modulant, porteuse et signal AM
+
+% Lecture du fichier audio
+[audioData, audioFs] = audioread('musique.mp4');
 
 % Extraction du signal modulant
 modulant = audioData(1:Ne, 1); 
@@ -24,15 +27,13 @@ modulant = audioData(1:Ne, 1);
 modulant_mean = mean(modulant); % Moyenne du signal
 modulant_min = min(modulant);  % Valeur minimale
 modulant_max = max(modulant);  % Valeur maximale
-modulant_norm = ((modulant - modulant_mean) / (modulant_max - modulant_min) * 2)'; 
+modulant_norm = ((modulant - modulant_mean) / (modulant_max - modulant_min) * 2)';  % Norme du modulant
 
-% Ajuster l'amplitude crête-crête à 2V et centrer sur 0V
+% Ajustement l'amplitude crête-crête à 2V et centrer sur 0V
 modulant_norm = modulant_norm * Ep / 2; 
 
-% Signal porteur
+% Préparation des signaux pour l'affichage
 pt = Ep * cos(2 * pi * fp * t); % Signal porteur p(t)
-
-% Signal modulé
 st = (1 + m * modulant_norm) .* pt; % Signal modulé s(t)
 
 %% Affichage des chronogrammes
@@ -56,8 +57,8 @@ grid on
 
 %% Calcul puis affichage des spectres
 N = length(t);
-S = fft(st); 
-f = (0:N-1) * (fe / N); 
+S = fft(st);            % FFT permet de générer une transformé de fourier, que l'on utilise pour représenté les raies du spectre
+f = (0:N-1) * (fe / N); % fe est la fréquence d'échantillonnage
 
 subplot(3,1,3)
 plot(f, abs(S) / N)

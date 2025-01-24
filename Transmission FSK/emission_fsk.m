@@ -1,21 +1,22 @@
+%% Programme de demodulation d'une emission FSK v1
+
 %% Remise à zéro du contexte
-clear ;
-clc ;
-close ;
+clear;
+clc;
+close all;
 
-% Définition des paramètres
-Df = 100e3;                   % Déviation de fréquence en Hz (100 kHz)
-Nb = 1000;                     % Nombre de bits du message
-m = randi([0, 1], 1, Nb);   % Message numérique à transmettre
-D = 20e3;                   % Débit binaire en bits par seconde (20 kbits/s)
-Tb = 1 / D;                 % Durée d'un bit (s)
-fp = 2.414e9;                 % Fréquence porteuse en Hz (2.4 GHz)
-
-Nech_symb=32;   %nombre déchantillons par symbole
-Te=Tb/Nech_symb; % temps d'échantillonage
-fe=Nech_symb*D; % freq d'échantillonage
-Nech=Nech_symb*Nb;
-t = (0:Nech-1)*Te;              % Temps (1 ms avec un pas de 1 µs)
+%% Définition des paramètres
+Df = 100e3;                                     % Déviation de fréquence en Hz (100 kHz)
+Nb = 29;                                        % Nombre de bits du message
+m = [1 0 1 0 1 1 0 1 0 ones(1,20)];             % Message numérique à transmettre
+D = 20e3;                                       % Débit binaire en bits par seconde (20 kbits/s)
+Tb = 1 / D;                                     % Durée d'un bit (s)
+fp = 2.414e9;                                   % Fréquence porteuse en Hz (2.4 GHz)
+Nech_symb=32;                                   % Nombre déchantillons par symbole
+Te=Tb/Nech_symb;                                % Temps d'échantillonage
+fe=Nech_symb*D;                                 % Freq d'échantillonage
+Nech=Nech_symb*Nb;                              % Nombre d'échantillons
+t = (0:Nech-1)*Te;                              % Temps (1 ms avec un pas de 1 µs)
 c1 = exp(1*j*2*pi*Df*t);
 c2 = exp(-1*j*2*pi*Df*t);
 

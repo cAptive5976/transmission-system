@@ -1,26 +1,26 @@
-%% 
+%% Programme du codage BdB Manchester
+
+%% Remise à zéro du contexte
 clear;
 clc;
-close;
+close all;
+
 %% Définition des variables
-D=1000;          %débit en bits/s
-Nech_bit=40;    % nombre d'échantillons par symbole; doit être pair.
-fe=D*Nech_bit;  %fréquence d'échantillonnage.
+D=1000;                 % Débit en bits/s
+Nech_bit=40;            % Nombre d'échantillons par symbole; doit être pair.
+fe=D*Nech_bit;          % Fréquence d'échantillonnage.
 
-Te=1/fe;  % période d'échantillonnage
-Tb=1/D;   % durée d'un bit
+Te=1/fe;                % Période d'échantillonnage
+Tb=1/D;                 % Durée d'un bit
 
-data=[0 1 1 1 0 1 1 0 0 0 0 0 0 0  1 0 ];  %séquence utilisateur de 10 bits
-alea=randi([0 1],1,10000);
-data=[data alea];  %ajoute 10000 bits aléatoires
-                                         %après la séquence utilisateur
+data=[0 1 1 1 0 1 1 0 0 0 0 0 0 0  1 0 ];  % Séquence utilisateur de 10 bits
+data=[data randi([0 1],1,10000)];   % Ajoute 10000 bits aléatoires après la séquence utilisateur
 
-Nb=size(data,2);          %Nb de bits à transmettre
-Nech=Nech_bit*Nb;        %nombre total d'échantillons  
-Nech_half=Nech_bit/2;
-Tmax=Nb*Tb;               %durée de la trame
-
-t=0:Te:Tmax-Te;           %vecteur temps constitué de Ns*Nb échantilllons   
+Nb=size(data,2);        % Nombre de bits à transmettre
+Nech=Nech_bit*Nb;       % Nombre total d'échantillons
+Nech_half=Nech_bit/2;   % Moitier du nombre d'échantillons
+Tmax=Nb*Tb;             % Durée de la trame
+t=0:Te:Tmax-Te;         % Vecteur temps constitué de Ns*Nb échantilllons   
 
 
 %% Création du signal Manchester

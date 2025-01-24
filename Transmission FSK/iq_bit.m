@@ -11,8 +11,8 @@ Te=Tb/Nech_symb; % temps d'échantillonage
 fe=Nech_symb*D; % freq d'échantillonage
 Nech=Nech_symb*Nb;
 t = (0:Nech-1)*Te;              % Temps (1 ms avec un pas de 1 µs)
-c1 = exp(1*j*2*pi*Df*t)
-c2 = exp(-1*j*2*pi*Df*t)
+c1 = exp(1*j*2*pi*Df*t);
+c2 = exp(-1*j*2*pi*Df*t);
 
 
 %% Codage des données binaires en NRZ
@@ -26,7 +26,7 @@ for n=1:Nb      %codage des différents bits
      else
         signal_NRZ=[signal_NRZ symbole_0];
      end
-    end  
+end  
 
 c = c1.*signal_NRZ + c2.*(1-signal_NRZ);
 

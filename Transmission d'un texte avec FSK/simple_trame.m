@@ -1,0 +1,76 @@
+%% Programme d'emission d'une trame avec FSK
+
+%% Remise à zéro du contexte
+clear;
+clc;
+close all;
+
+%% Définition des paramètres
+Df = 100e3;                                     % Déviation de fréquence en Hz (100 kHz)
+Nb = 38;                                        % Nombre de bits du message
+synchro = [1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0];    % Bits de synchro
+preambule = [1 1 1 1 1 0 0 1 1 0 1 0 1];        % Preambule
+m = [1 0 1 0 1 1 0 1 0];                        % Message numérique binaire à transmettre
+Data = [synchro preambule m];                   % Trame complete
+D = 20e3;                                       % Débit binaire en bits par seconde (20 kbits/s)
+Tb = 1 / D;                                     % Durée d'un bit (s)
+fp = 2.414e9;                                   % Fréquence porteuse en Hz (2.4 GHz)
+
+Nech_symb=32;                                   % Nombre déchantillons par symbole
+Te=Tb/Nech_symb;                                % Temps d'échantillonage
+fe=Nech_symb*D;                                 % Frequence d'échantillonage
+Nech=Nech_symb*Nb;                              % Nombre d'échantillons
+
+t = (0:Nech-1)*Te;                              % Vecteur Temps (1 ms avec un pas de 1 µs)
+c1 = exp(1*j*2*pi*Df*t);                        % Signal complexe c1
+c2 = exp(-1*j*2*pi*Df*t);                       % Signal complexe c2
+
+
+%% Codage des données binaires en NRZ
+signal_NRZ=[];             %initialisation du signal codé en NRZ
+symbole_1=ones(1,Nech_symb);
+symbole_0=zeros(1,Nech_symb);
+
+for n=1:Nb      %codage des différents bits
+     if (Data(n)==1)
+        signal_NRZ=[signal_NRZ symbole_1];
+     else
+        signal_NRZ=[signal_NRZ symbole_0];
+     end
+    end  
+
+c = c1.*signal_NRZ + c2.*(1-signal_NRZ);
+
+%% Tranmission des données
+tx = sdrtx('Pluto', 'RadioID', 'usb:0', 'CenterFrequency', fp, 'BasebandSampleRate', fe, 'Gain', 0, 'ShowAdvancedProperties', true); 
+release(tx); % réinitialisation de l’Adalm Pluto
+transmitRepeat(tx, c.'); % émission du signal: s est transposé car la fonction émet des vecteur colonnes... 
+
+%% Création de la figure avec 3 subplots
+figure;
+I=real(c);
+Q=imag(c);
+
+subplot(3,1,1);
+plot(t, signal_NRZ);
+title('Signal NRZ');
+xlabel('Temps (s)');
+ylabel('Amplitude');
+axis([0 25/D -1 2]); 
+grid on;
+
+subplot(3,1,2);
+plot(t, I);
+title('I modulé FSK');
+xlabel('Temps (s)');
+ylabel('Amplitude');
+axis([0 25/D -1 1]); 
+grid on;
+
+subplot(3,1,3);
+plot(t, Q);
+title('Q modulé FSK');
+xlabel('Temps (s)');
+ylabel('Amplitude');
+axis([0 25/D -1 1]); 
+grid on;
